@@ -1,0 +1,29 @@
+# Σφαλέρες Python
+__pycache__/
+*.pyc
+
+# Μεγάλα αρχεία CAD ή 3D
+*.PLY
+*.SLDPRT
+*.STL
+*.STEP
+
+# Excel / Προσωπικά δεδομένα
+*.xlsx
+*.xls
+
+# Αρχεία από παρουσιάσεις
+*.pptx
+*.pdf
+
+# Προσωρινά αρχεία Windows
+Thumbs.db
+.DS_Store
+
+# Φάκελοι λήψεων και βοηθητικά
+downloads/
+env/
+*.log
+
+# Git υπο-αποθετήρια (π.χ. McMasterDownloader)
+McMasterDownloader/.git/
