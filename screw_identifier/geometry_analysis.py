@@ -11,11 +11,24 @@ def crop_center_section(points, crop_percentage=0.6):
     mask = (z_vals >= low) & (z_vals <= high)
     return points[mask], z_min, z_max
 
-def estimate_diameter(points, threshold=0.5, max_iter=3000):
-    cyl = Cylinder()
-    axis, center, radius, inliers = cyl.fit(points, thresh=threshold, maxIteration=max_iter)
-    diameter = round(2 * radius, 2)
-    return diameter, len(inliers)
+from pyransac3d import Cylinder
+import numpy as np
+
+def robust_estimate_diameter(points, n_runs=10, threshold=0.5, max_iter=3000, min_inliers=100):
+    diameters = []
+
+    for _ in range(n_runs):
+        cyl = Cylinder()
+        axis, center, radius, inliers = cyl.fit(points, thresh=threshold, maxIteration=max_iter)
+        if len(inliers) >= min_inliers:
+            diameters.append(2 * radius)
+
+    if diameters:
+        final_diameter = round(np.median(diameters), 2)
+        return final_diameter, len(diameters)
+    else:
+        return None, 0  # No reliable fit
+
 
 def estimate_length(z_min, z_max):
     return round(z_max - z_min, 2)

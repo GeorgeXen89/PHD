@@ -1,6 +1,14 @@
+import pandas as pd
+
 def find_standard_screw(diameter, length, thread_type):
-    standards = {5: "M5", 6: "M6", 8: "M8", 10: "M10", 12: "M12"}
-    closest_d = min(standards.keys(), key=lambda x: abs(x - diameter))
-    screw_type = f"{standards[closest_d]}x{int(round(length))} {thread_type}"
-    url = f"https://www.mcmaster.com/screws/{standards[closest_d]}-socket-head-cap-screws/"
+    df = pd.read_csv("iso_screws.csv")
+    filtered = df[df["thread_type"] == thread_type].copy()
+
+    # Ενισχυμένο βάρος στη διάμετρο (π.χ. ×5)
+    filtered["distance"] = (((filtered["diameter"] - diameter)*5)**2 + (filtered["length"] - length)**2)**0.5
+
+    best_match = filtered.loc[filtered["distance"].idxmin()]
+    screw_type = best_match["type"]
+    head = screw_type.split()[0].split("x")[0].lower()
+    url = f"https://www.mcmaster.com/screws/{head}-socket-head-cap-screws/"
     return screw_type, url
